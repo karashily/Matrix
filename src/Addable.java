@@ -1,4 +1,4 @@
 
 public interface Addable {
-	public void Add(Addable a);
+	public Addable Add(Addable a);
 }

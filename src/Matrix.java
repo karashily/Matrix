@@ -3,14 +3,29 @@ public class Matrix implements Addable {
 	public int n, m;
 	public int[][] numbers;
 	
+	static final class MultiplicationException extends Exception {
+		public String errorMessage;
+		
+		public MultiplicationException(String msg) {
+			errorMessage = msg;
+		}
+		
+		public void message() {
+			System.out.println(errorMessage);
+		}
+	}
+	
+	
 	@Override
-	public void Add(Addable a) {
+	public Addable Add(Addable a) {
 		Matrix matrix = (Matrix) a;
+		Matrix result = new Matrix(n, m);
 		for(int i=0;i<n;i++) {
 			for(int j=0;j<m;j++) {
-				numbers[i][j]+= matrix.numbers[i][j];
+				result.numbers[i][j]= numbers[i][j] + matrix.numbers[i][j];
 			}
 		}
+		return result;
 	}
 	
 	public Matrix(int n, int m) {
@@ -54,5 +69,25 @@ public class Matrix implements Addable {
 		int temp = n;
 		n = m;
 		m = temp;
+	}
+	
+	public Matrix multiply(Matrix B) throws MultiplicationException {
+		if(this.m != B.n) {
+			throw new MultiplicationException("Exception Occured while trying to multiply matricies of dimensions (" + this.n +"," + this.m + ") and (" + B.n + "," + B.m + ")");
+		}
+		int resultRows = this.n;
+		int resultCols = B.m;
+		int thirdDim = this.m;
+		Matrix result = new Matrix(resultRows, resultCols);
+		for(int i=0;i<resultRows;i++) {
+			for(int j=0;j<resultCols;j++) {
+				int element = 0;
+				for(int k=0;k<thirdDim;k++) {
+					element += this.numbers[i][k] * B.numbers[k][j];
+				}
+				result.numbers[i][j] = element;
+			}
+		}
+		return result;
 	}
 }
